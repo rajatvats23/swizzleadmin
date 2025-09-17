@@ -28,6 +28,9 @@ interface NavItem {
   ],
   template: `
     <div class="dashboard-layout">
+      <!-- Animated Background -->
+      <div class="animated-background"></div>
+      
       <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-header">
@@ -89,24 +92,44 @@ interface NavItem {
       height: 100vh;
       overflow: hidden;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      position: relative;
+      background: transparent !important;
     }
+
+    .animated-background {
+  position: absolute;
+  filter: opacity(0.15);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff8eb;
+  background-image: url('/assets/layout-bgs.png');
+  background-size: 400px;  /* Make it smaller - adjust this value */
+  background-position: center;
+  background-repeat: repeat;  /* Make it repeat */
+  z-index: 0;
+}
 
     .sidebar {
       width: 200px;
-      background: linear-gradient(180deg, #008045 0%, #009c4c 100%);
+      background: #009c4c;
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
       box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
+      position: relative;
+      z-index: 10;
     }
 
     .sidebar-header {
       padding: 1rem 1.25rem;
+      align-self: center;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .logo-img {
-      height: 24px;
+      height: 35px;
       width: auto;
     }
 
@@ -156,14 +179,18 @@ interface NavItem {
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
+      z-index: 5;
     }
 
     .header {
-      background: white;
-      border-bottom: 1px solid #e5e7eb;
+      background: #009c4c;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(229, 231, 235, 0.5);
       padding: 0 1.5rem;
       height: 48px;
       display: flex;
+      color: white;
       align-items: center;
       justify-content: flex-end;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
@@ -177,7 +204,7 @@ interface NavItem {
 
     .notification-btn,
     .user-avatar {
-      color: #6b7280;
+      color: white;
       width: 36px;
       height: 36px;
       
@@ -190,13 +217,13 @@ interface NavItem {
 
     .notification-btn:hover,
     .user-avatar:hover {
-      background-color: #f9fafb;
+      background-color: rgba(249, 250, 251, 0.8);
       color: #009c4c;
     }
 
     .page-content {
       flex: 1;
-      background-color: #fafafa;
+      background-color: transparent;
       overflow-y: auto;
     }
 
@@ -245,6 +272,10 @@ interface NavItem {
         font-size: 0.75rem;
         padding: 0.5rem 1rem;
       }
+
+      .animated-background {
+        background-size: cover;
+      }
     }
 
     @media (max-width: 640px) {
@@ -262,6 +293,19 @@ interface NavItem {
 
       .main-content {
         width: 100%;
+      }
+    }
+
+    /* Performance optimizations */
+    .animated-background {
+      will-change: transform;
+      transform: translateZ(0); /* Force hardware acceleration */
+    }
+
+    /* Reduced motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .animated-background {
+        animation-duration: 120s; /* Slower animation */
       }
     }
   `]
