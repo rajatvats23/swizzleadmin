@@ -1,109 +1,332 @@
+// Angular Material v20 Custom Theme Override
+// Replace your existing styles.scss content with this
 
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+// Define your custom palette using Material 3 color system
+$custom-primary-palette: (
+  0: #000000,
+  10: #002111,
+  20: #003919,
+  25: #004622,
+  30: #00522b,
+  35: #005f34,
+  40: #006c3d,
+  50: #008751,
+  60: #00a465,
+  70: #00c17a,
+  80: #00df91,
+  90: #5ffdb4,
+  95: #afffce,
+  98: #edfff2,
+  99: #f6fff9,
+  100: #ffffff,
+  // Key color mappings
+  primary: #009c4c,
+  on-primary: #ffffff,
+  primary-container: #5ffdb4,
+  on-primary-container: #002111,
+  primary-fixed: #5ffdb4,
+  primary-fixed-dim: #42e09d,
+  on-primary-fixed: #002111,
+  on-primary-fixed-variant: #00522b
+);
+
+$custom-secondary-palette: (
+  0: #000000,
+  10: #1f1b13,
+  20: #352f26,
+  25: #413a2f,
+  30: #4d453a,
+  35: #595045,
+  40: #655c50,
+  50: #7e746b,
+  60: #988e83,
+  70: #b3a99d,
+  80: #cfc4b7,
+  90: #ebe0d1,
+  95: #f9eedf,
+  98: #fff8eb,
+  99: #fffbf7,
+  100: #ffffff,
+  // Key color mappings
+  secondary: #fff8eb,
+  on-secondary: #1f1b13,
+  secondary-container: #ebe0d1,
+  on-secondary-container: #1f1b13,
+  secondary-fixed: #ebe0d1,
+  secondary-fixed-dim: #cfc4b7,
+  on-secondary-fixed: #1f1b13,
+  on-secondary-fixed-variant: #4d453a
+);
+
+$custom-tertiary-palette: (
+  0: #000000,
+  10: #001f25,
+  20: #00363d,
+  25: #004248,
+  30: #004f54,
+  35: #005d61,
+  40: #006b6f,
+  50: #00878c,
+  60: #00a4aa,
+  70: #2ac1c8,
+  80: #4edde5,
+  90: #70faff,
+  95: #b8fdff,
+  98: #e8feff,
+  99: #f3feff,
+  100: #ffffff,
+  // Key color mappings
+  tertiary: #2ac1c8,
+  on-tertiary: #00363d,
+  tertiary-container: #70faff,
+  on-tertiary-container: #001f25
+);
+
+// Error palette (using Material's default red but customized)
+$custom-error-palette: (
+  0: #000000,
+  10: #410e0b,
+  20: #601410,
+  25: #6f1915,
+  30: #7d1f1a,
+  35: #8c251f,
+  40: #9b2c25,
+  50: #ba1a1a,
+  60: #dc3545,
+  70: #ff5449,
+  80: #ff897d,
+  90: #ffb4ab,
+  95: #ffebe9,
+  98: #fff8f7,
+  99: #fffbfa,
+  100: #ffffff,
+  // Key color mappings
+  error: #dc3545,
+  on-error: #ffffff,
+  error-container: #ffb4ab,
+  on-error-container: #410e0b
+);
+
+// Create the theme with your custom palettes
 html {
   @include mat.theme((
     color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
+      primary: $custom-primary-palette,
+      secondary: $custom-secondary-palette,
+      tertiary: $custom-tertiary-palette,
+      error: $custom-error-palette,
+      // Override neutral colors for surface variations
+      neutral: (
+        0: #000000,
+        10: #1a1c18,
+        20: #2f312c,
+        25: #3a3c37,
+        30: #464842,
+        35: #52544e,
+        40: #5e6059,
+        50: #777872,
+        60: #91918b,
+        70: #acaba5,
+        80: #c7c7c0,
+        90: #e3e3dc,
+        95: #f1f1ea,
+        98: #faf9f2,
+        99: #fdfcf5,
+        100: #ffffff
+      ),
+      neutral-variant: (
+        0: #000000,
+        10: #191d16,
+        20: #2e322a,
+        25: #393d35,
+        30: #454940,
+        35: #50544c,
+        40: #5c6057,
+        50: #757970,
+        60: #8f9289,
+        70: #a9aca3,
+        80: #c5c8bd,
+        90: #e1e4d9,
+        95: #eff2e7,
+        98: #f8fbef,
+        99: #fbfef2,
+        100: #ffffff
+      )
     ),
-    typography: Roboto,
-    density: 0,
+    typography: (
+      brand-family: 'Montserrat',
+      plain-family: 'Montserrat'
+    ),
+    density: 0
   ));
 }
 
-body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
-  margin: 0;
-}
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #fff8eb;
-}
-
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Material Icons configuration */
-.material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24;
-}
-
-/* Custom CSS variables for the app theme */
+// Additional CSS custom properties for consistent usage
 :root {
+  // Your existing custom properties
   --primary-color: #009c4c;
   --secondary-color: #fff8eb;
   --error-color: #dc3545;
-  --text-primary: #333333;
-  --text-secondary: #666666;
-  --border-color: #e1e5e9;
-  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.1);
-  --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.15);
-  --border-radius: 8px;
-  --border-radius-large: 12px;
+  --text-primary: #1a1c18;
+  --text-secondary: #5e6059;
+  --border-color: #e1e4d9;
+  
+  // Material Design 3 surface colors
+  --surface: var(--mat-sys-surface);
+  --surface-dim: var(--mat-sys-surface-dim);
+  --surface-bright: var(--mat-sys-surface-bright);
+  --surface-container-lowest: var(--mat-sys-surface-container-lowest);
+  --surface-container-low: var(--mat-sys-surface-container-low);
+  --surface-container: var(--mat-sys-surface-container);
+  --surface-container-high: var(--mat-sys-surface-container-high);
+  --surface-container-highest: var(--mat-sys-surface-container-highest);
+  
+  // Override shadows using M3 elevation
+  --shadow-light: var(--mat-sys-level1-box-shadow);
+  --shadow-medium: var(--mat-sys-level3-box-shadow);
+  --shadow-heavy: var(--mat-sys-level5-box-shadow);
+  
+  --border-radius: 12px;
+  --border-radius-large: 16px;
 }
 
-/* Utility classes */
-.text-primary { color: var(--primary-color); }
-.text-error { color: var(--error-color); }
-.text-muted { color: var(--text-secondary); }
-
-/* Form elements global styles */
-input, textarea, select {
-  font-family: inherit;
-}
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-}
-
-/* Remove default button styles */
-button {
-  border: none;
-  background: none;
-  padding: 0;
+// Override specific Material components for consistency
+body {
+  background-color: var(--secondary-color);
+  color: var(--mat-sys-on-surface);
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   margin: 0;
+  height: 100%;
 }
 
-/* Scroll behavior */
-html {
-  scroll-behavior: smooth;
+// Form field customizations with reduced spacing
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-label-text-color: var(--mat-sys-on-surface-variant);
+  --mdc-outlined-text-field-input-text-color: var(--mat-sys-on-surface);
+  --mdc-outlined-text-field-outline-color: var(--mat-sys-outline);
+  
+  // Reduce bottom margin between form fields
+  margin-bottom: -4px !important;
+  
+  &.mat-focused {
+    --mdc-outlined-text-field-focus-outline-color: var(--mat-sys-primary);
+    --mdc-outlined-text-field-focus-label-text-color: var(--mat-sys-primary);
+  }
+  
+  // Make form fields more compact
+  .mdc-text-field {
+    height: 48px;
+  }
+  
+  // Reduce label and helper text spacing
+  .mat-mdc-form-field-subscript-wrapper {
+    margin-top: 2px;
+  }
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Button customizations - FIXED FOR PRIMARY GREEN
+.mat-mdc-raised-button {
+  &.mat-primary {
+    --mdc-protected-button-container-color: #009c4c !important;
+    --mdc-protected-button-label-text-color: #ffffff !important;
+    background-color: #009c4c !important;
+    color: #ffffff !important;
+    
+    &:hover {
+      --mdc-protected-button-container-color: #007a3d !important;
+      background-color: #007a3d !important;
+      filter: none;
+    }
+    
+    &:disabled {
+      --mdc-protected-button-disabled-container-color: #cccccc !important;
+      --mdc-protected-button-disabled-label-text-color: #666666 !important;
+      background-color: #cccccc !important;
+      color: #666666 !important;
+      opacity: 1;
+    }
+  }
+}
+
+.mat-mdc-button {
+  &.mat-primary {
+    --mdc-text-button-label-text-color: var(--mat-sys-primary);
+    
+    &:hover {
+      --mdc-text-button-hover-state-layer-color: var(--mat-sys-primary);
+      --mdc-text-button-hover-state-layer-opacity: 0.08;
+    }
+  }
+  
+  &.mat-warn {
+    --mdc-text-button-label-text-color: var(--mat-sys-error);
+  }
+}
+
+// Card customizations
+.mat-mdc-card {
+  --mdc-elevated-card-container-color: var(--mat-sys-surface-container-low);
+  --mdc-elevated-card-container-shadow: var(--mat-sys-level1-box-shadow);
+}
+
+// Icon customizations
+.mat-icon {
+  color: var(--mat-sys-on-surface-variant);
+  
+  &.mat-primary {
+    color: var(--mat-sys-primary);
+  }
+  
+  &.mat-warn {
+    color: var(--mat-sys-error);
+  }
+}
+
+// Spinner customizations
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--mat-sys-primary);
+}
+
+// Error message styling
+.mat-mdc-form-field-error {
+  color: var(--mat-sys-error);
+}
+
+// Additional utility classes for your theme
+.surface-container {
+  background-color: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface);
+}
+
+.surface-variant {
+  background-color: var(--mat-sys-surface-variant);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.primary-container {
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.error-container {
+  background-color: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+// Responsive adjustments
+@media (prefers-color-scheme: dark) {
+  // You can add dark theme overrides here if needed
+  // The M3 system handles most dark mode automatically
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  :root {
+    --mat-sys-outline: #000000;
+    --mat-sys-outline-variant: #333333;
+  }
+}

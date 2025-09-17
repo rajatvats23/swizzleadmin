@@ -18,13 +18,16 @@ import { RouterOutlet } from '@angular/router';
   `,
   styles: [`
     .auth-layout {
-      width: 100%;
-      min-height: 100vh;
-      position: relative;
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 1rem;
+      overflow: hidden; /* Prevent scrollbars */
     }
 
     .auth-background {
@@ -45,7 +48,7 @@ import { RouterOutlet } from '@angular/router';
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 450px;
+      max-width: 400px; /* Reduced from 450px */
       margin-left: auto;
       margin-right: 5%;
     }
@@ -54,26 +57,31 @@ import { RouterOutlet } from '@angular/router';
       background: white;
       border-radius: 12px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
+      padding: 1.5rem; /* Reduced from 2rem */
       width: 100%;
-      min-height: auto;
+      max-height: 90vh; /* Prevent vertical overflow */
+      overflow-y: auto; /* Only scroll if content is too tall */
     }
 
     @media (max-width: 768px) {
       .auth-content {
         margin-right: auto;
         margin-left: auto;
-        max-width: 400px;
+        max-width: 360px; /* Reduced */
       }
       
       .auth-card {
-        padding: 1.5rem;
+        padding: 1.25rem; /* Reduced */
       }
     }
 
     @media (max-width: 480px) {
       .auth-layout {
         padding: 0.5rem;
+      }
+      
+      .auth-content {
+        max-width: 100%;
       }
       
       .auth-card {

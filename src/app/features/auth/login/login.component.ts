@@ -38,7 +38,7 @@ import { AuthService } from '../../../core/services/auth.service';
       }
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Email Address</mat-label>
           <input matInput formControlName="email" type="email" placeholder="name@example.com">
           <mat-icon matSuffix>email</mat-icon>
@@ -46,7 +46,7 @@ import { AuthService } from '../../../core/services/auth.service';
           <mat-error *ngIf="emailControl.hasError('email')">Please enter a valid email</mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Password</mat-label>
           <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'" placeholder="Enter your password">
           <button matSuffix mat-icon-button type="button" (click)="togglePasswordVisibility()">
@@ -56,7 +56,7 @@ import { AuthService } from '../../../core/services/auth.service';
         </mat-form-field>
 
         <div class="forgot-password">
-          <a mat-button routerLink="/auth/forgot-password" color="warn">Forgot Password?</a>
+          <a mat-button routerLink="/auth/forgot-password" color="primary">Forgot Password?</a>
         </div>
 
         <button mat-raised-button color="primary" type="submit" class="signin-button" [disabled]="loginForm.invalid || submitting()">
@@ -75,24 +75,27 @@ import { AuthService } from '../../../core/services/auth.service';
   styles: [`
     .login-container {
       width: 100%;
+      max-width: 100%;
     }
 
     .login-header {
       text-align: left;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
 
     .welcome-title {
       font-size: 1.5rem;
       font-weight: 500;
       color: #009c4c;
-      margin: 0 0 0.5rem 0;
+      margin: 0 0 0.25rem 0;
+      font-family: 'Montserrat', sans-serif;
     }
 
     .signin-subtitle {
       font-size: 1rem;
       color: #666;
       margin: 0;
+      font-family: 'Montserrat', sans-serif;
     }
 
     .error-message {
@@ -100,7 +103,7 @@ import { AuthService } from '../../../core/services/auth.service';
       color: #dc3545;
       padding: 0.75rem;
       border-radius: 8px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -111,12 +114,12 @@ import { AuthService } from '../../../core/services/auth.service';
     .login-form {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.5rem; /* Reduced gap between form fields */
     }
 
     .forgot-password {
       text-align: right;
-      margin: -0.5rem 0 1rem 0;
+      margin: 0.25rem 0 1rem 0;
     }
 
     .signin-button {
@@ -128,6 +131,7 @@ import { AuthService } from '../../../core/services/auth.service';
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
     }
 
     .auth-footer {
@@ -141,6 +145,7 @@ import { AuthService } from '../../../core/services/auth.service';
       margin: 0;
       font-size: 0.875rem;
       color: #666;
+      font-family: 'Montserrat', sans-serif;
     }
 
     mat-form-field {
@@ -151,24 +156,14 @@ import { AuthService } from '../../../core/services/auth.service';
       margin-right: 8px;
     }
 
-    /* Custom Material theme colors */
-    ::ng-deep .mat-mdc-raised-button.mat-primary {
-      --mdc-protected-button-container-color: #009c4c;
-      --mdc-protected-button-label-text-color: white;
+    /* Override Material's default margins for tighter spacing */
+    ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+      margin-top: 2px !important;
     }
 
-    ::ng-deep .mat-mdc-raised-button.mat-primary:hover {
-      --mdc-protected-button-container-color: #007a3d;
-    }
-
-    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__leading,
-    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__notch,
-    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__trailing {
-      border-color: #009c4c;
-    }
-
-    ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
-      color: #009c4c;
+    ::ng-deep .mat-mdc-form-field-hint-wrapper,
+    ::ng-deep .mat-mdc-form-field-error-wrapper {
+      padding-top: 2px !important;
     }
   `]
 })
