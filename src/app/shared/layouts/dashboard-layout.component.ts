@@ -120,7 +120,7 @@ interface NavItem {
         width: 100%;
         height: 100%;
         background-color: #fff8eb;
-        background-image: url('/assets/layout-bgs.png');
+        background-image: url('/assets/layout-bg.png');
         background-size: 400px; /* Make it smaller - adjust this value */
         background-position: center;
         background-repeat: repeat; /* Make it repeat */
