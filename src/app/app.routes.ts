@@ -41,42 +41,42 @@ export const routes: Routes = [
   {
     path: 'auth',
     canActivate: [guestGuard],
-    loadChildren: () => import('./features/auth/auth.routes').then(m => m.authRoutes)
+    loadChildren: () => import('./auth.routes').then(m => m.authRoutes)
   },
   
   // Protected dashboard routes
   {
     path: 'dashboard',
     // canActivate: [authGuard],
-    loadComponent: () => import('./shared/layouts/dashboard-layout.component').then(m => m.DashboardLayoutComponent),
+    loadComponent: () => import('./dashboard-layout.component').then(m => m.DashboardLayoutComponent),
     children: [
       {
         path: '',
-        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./dashboard.component').then(m => m.DashboardComponent)
       },
       {
         path: 'orders',
-        loadComponent: () => import('./features/orders/orders.component').then(m => m.OrdersComponent)
+        loadComponent: () => import('./orders.component').then(m => m.OrdersComponent)
       },
       {
         path: 'menu',
-        loadComponent: () => import('./features/menu/menu.component').then(m => m.MenuComponent)
+        loadComponent: () => import('./menu.component').then(m => m.MenuComponent)
       },
       {
         path: 'inventory',
-        loadComponent: () => import('./features/inventory/inventory.component').then(m => m.InventoryComponent)
+        loadComponent: () => import('./inventory.component').then(m => m.InventoryComponent)
       },
       {
         path: 'staff',
-        loadComponent: () => import('./features/staff/staff.component').then(m => m.StaffComponent)
+        loadComponent: () => import('./staff.component').then(m => m.StaffComponent)
       },
       {
         path: 'analytics',
-        loadComponent: () => import('./features/analytics/analytics.component').then(m => m.AnalyticsComponent)
+        loadComponent: () => import('./analytics.component').then(m => m.AnalyticsComponent)
       },
       {
         path: 'settings',
-        loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent)
+        loadComponent: () => import('./settings.component').then(m => m.SettingsComponent)
       }
     ]
   },

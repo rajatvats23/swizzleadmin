@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AuthService, RegisterRequest } from '../../../core/services/auth.service';
+import { AuthService, RegisterRequest } from './auth.service';
 
 @Component({
   selector: 'app-register',
