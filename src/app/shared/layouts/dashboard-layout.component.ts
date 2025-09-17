@@ -168,7 +168,7 @@ interface NavItem {
         text-decoration: none;
         transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         font-weight: 400;
-        font-size: 0.8125rem;
+        font-size: 1rem;
         letter-spacing: 0.01em;
       }
 
@@ -233,8 +233,8 @@ interface NavItem {
 
       .notification-btn:hover,
       .user-avatar:hover {
-        background-color: rgba(249, 250, 251, 0.8);
-        color: #009c4c;
+        // background-color:
+        color:  rgba(249, 250, 251, 0.8);;
       }
 
       .page-content {
