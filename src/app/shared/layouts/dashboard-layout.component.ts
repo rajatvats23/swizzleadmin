@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
 import { AuthService } from '../../core/services/auth.service';
 
 interface NavItem {
@@ -20,14 +22,16 @@ interface NavItem {
     RouterLink,
     RouterLinkActive,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatMenuModule,
+    MatBadgeModule
   ],
   template: `
     <div class="dashboard-layout">
       <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-header">
-          <h2 class="app-title">Swizzle</h2>
+          <img src="/assets/logo_light.svg" alt="Swizzle" class="logo-img">
         </div>
         
         <nav class="sidebar-nav">
@@ -43,18 +47,38 @@ interface NavItem {
             </a>
           }
         </nav>
-
-        <div class="sidebar-footer">
-          <button mat-button class="logout-btn" (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            <span>Logout</span>
-          </button>
-        </div>
       </aside>
 
       <!-- Main Content -->
       <main class="main-content">
-        <router-outlet></router-outlet>
+        <!-- Header -->
+        <header class="header">
+          <div class="header-right">
+            <button mat-icon-button [matBadge]="3" matBadgeColor="warn" class="notification-btn">
+              <mat-icon>notifications</mat-icon>
+            </button>
+            
+            <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-avatar">
+              <mat-icon>account_circle</mat-icon>
+            </button>
+            
+            <mat-menu #userMenu="matMenu">
+              <button mat-menu-item>
+                <mat-icon>person</mat-icon>
+                <span>Profile</span>
+              </button>
+              <button mat-menu-item (click)="logout()">
+                <mat-icon>logout</mat-icon>
+                <span>Logout</span>
+              </button>
+            </mat-menu>
+          </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+          <router-outlet></router-outlet>
+        </div>
       </main>
     </div>
   `,
@@ -64,102 +88,162 @@ interface NavItem {
       width: 100vw;
       height: 100vh;
       overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     .sidebar {
-      width: 240px;
-      background-color: #009c4c;
+      width: 200px;
+      background: linear-gradient(180deg, #008045 0%, #009c4c 100%);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
     }
 
     .sidebar-header {
-      padding: 1.5rem 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .app-title {
-      color: white;
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
+    .logo-img {
+      height: 24px;
+      width: auto;
     }
 
     .sidebar-nav {
       flex: 1;
-      padding: 1rem 0;
+      padding: 0.75rem 0;
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 2px;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      color: white;
-      text-decoration: none;
-      transition: all 0.2s ease;
+      gap: 0.625rem;
+      padding: 0.625rem 1.25rem;
       margin: 0 0.5rem;
-      border-radius: 8px;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
+      border-radius: 6px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 400;
+      font-size: 0.8125rem;
+      letter-spacing: 0.01em;
     }
 
     .nav-item:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.08);
+      color: white;
+      transform: translateX(2px);
     }
 
     .nav-item.active {
-      background-color: white;
-      color: #009c4c;
-    }
-
-    .nav-item mat-icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-    }
-
-    .sidebar-footer {
-      padding: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .logout-btn {
-      width: 100%;
+      background-color: rgba(255, 255, 255, 0.12);
       color: white;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 0.75rem;
-      padding: 0.75rem;
-      font-family: 'Montserrat', sans-serif;
       font-weight: 500;
     }
 
-    .logout-btn:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .logout-btn mat-icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
+    .nav-item mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
     }
 
     .main-content {
       flex: 1;
-      background-color: #faf9f6;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 1.5rem;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .notification-btn,
+    .user-avatar {
+      color: #6b7280;
+      width: 36px;
+      height: 36px;
+      
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .notification-btn:hover,
+    .user-avatar:hover {
+      background-color: #f9fafb;
+      color: #009c4c;
+    }
+
+    .page-content {
+      flex: 1;
+      background-color: #fafafa;
       overflow-y: auto;
+    }
+
+    /* Menu styling overrides */
+    ::ng-deep .mat-mdc-menu-panel {
+      background-color: white;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin-top: 4px;
+    }
+
+    ::ng-deep .mat-mdc-menu-item {
+      color: #374151;
+      font-size: 0.8125rem;
+      min-height: 36px;
+      padding: 0 12px;
+    }
+
+    ::ng-deep .mat-mdc-menu-item:hover {
+      background-color: #f9fafb;
+    }
+
+    ::ng-deep .mat-mdc-menu-item mat-icon {
+      color: #6b7280;
+      margin-right: 0.5rem;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    ::ng-deep .mat-badge-content {
+      font-size: 10px;
+      font-weight: 600;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
     }
 
     @media (max-width: 768px) {
       .sidebar {
-        width: 200px;
+        width: 180px;
+      }
+      
+      .nav-item {
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
       }
     }
 
@@ -169,7 +253,7 @@ interface NavItem {
         z-index: 1000;
         height: 100vh;
         transform: translateX(-100%);
-        transition: transform 0.3s ease;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .sidebar.open {

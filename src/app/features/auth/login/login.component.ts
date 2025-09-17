@@ -119,7 +119,6 @@ import { AuthService } from '../../../core/services/auth.service';
 
     .forgot-password {
       text-align: right;
-      margin: 0.25rem 0 1rem 0;
     }
 
     .signin-button {

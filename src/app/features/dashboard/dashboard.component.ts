@@ -1,166 +1,212 @@
-// src/app/features/dashboard/dashboard.component.ts
-import { Component, signal, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { AuthService } from '../../core/services/auth.service';
-
-interface DashboardCard {
-  title: string;
-  value: string;
-  icon: string;
-  color: string;
-}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatCardModule],
+  imports: [CommonModule, MatIconModule],
   template: `
     <div class="dashboard-page">
-      <div class="page-header">
+      <div class="welcome-section">
         <h1>Dashboard</h1>
-        <p>Welcome back, {{ user()?.firstName || 'User' }}!</p>
+        <p>Welcome back, User!</p>
       </div>
 
-      <div class="dashboard-cards">
-        @for (card of cards(); track card.title) {
-          <mat-card class="dashboard-card">
-            <div class="card-content">
-              <div class="card-info">
-                <span class="card-value">{{ card.value }}</span>
-                <span class="card-title">{{ card.title }}</span>
-              </div>
-              <div class="card-icon" [style.background-color]="card.color">
-                <mat-icon>{{ card.icon }}</mat-icon>
-              </div>
-            </div>
-          </mat-card>
-        }
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <mat-icon>receipt</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>156</h3>
+            <p>Total Orders</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <mat-icon>restaurant</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>42</h3>
+            <p>Menu Items</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <mat-icon>people</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>8</h3>
+            <p>Staff Members</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon green-light">
+            <mat-icon>trending_up</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>$12.4k</h3>
+            <p>Monthly Revenue</p>
+          </div>
+        </div>
       </div>
 
-      <div class="dashboard-content">
-        <mat-card class="content-card">
-          <h2>Quick Actions</h2>
-          <p>Your restaurant management tools are ready to use.</p>
-        </mat-card>
+      <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <p>Your restaurant management tools are ready to use.</p>
       </div>
     </div>
   `,
   styles: [`
     .dashboard-page {
-      padding: 1.5rem;
+      padding: 1.5rem 2rem;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
-    .page-header {
-      margin-bottom: 2rem;
+    .welcome-section {
+      margin-bottom: 1.75rem;
     }
 
-    .page-header h1 {
-      font-size: 1.75rem;
+    .welcome-section h1 {
+      font-size: 1.625rem;
       font-weight: 600;
-      color: #009c4c;
+      color: #111827;
       margin: 0 0 0.25rem 0;
-      font-family: 'Montserrat', sans-serif;
+      letter-spacing: -0.025em;
     }
 
-    .page-header p {
-      color: #666;
+    .welcome-section p {
+      color: #6b7280;
       margin: 0;
-      font-family: 'Montserrat', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 400;
     }
 
-    .dashboard-cards {
+    .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1rem;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
 
-    .dashboard-card {
+    .stat-card {
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .card-content {
+      padding: 1.25rem;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 1.5rem;
+      gap: 0.875rem;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .card-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+    .stat-card:hover {
+      border-color: #d1d5db;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      transform: translateY(-1px);
     }
 
-    .card-value {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #009c4c;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .card-title {
-      font-size: 0.875rem;
-      color: #666;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .card-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .card-icon mat-icon {
       color: white;
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
+      flex-shrink: 0;
     }
 
-    .dashboard-content {
-      display: grid;
-      gap: 1rem;
+    .stat-icon mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
     }
 
-    .content-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
+    .stat-icon.green { background-color: #009c4c; }
+    .stat-icon.orange { background-color: #ea580c; }
+    .stat-icon.blue { background-color: #2563eb; }
+    .stat-icon.green-light { background-color: #059669; }
 
-    .content-card h2 {
-      font-size: 1.25rem;
+    .stat-info h3 {
+      font-size: 1.375rem;
       font-weight: 600;
-      color: #009c4c;
-      margin: 0 0 0.5rem 0;
-      font-family: 'Montserrat', sans-serif;
+      color: #111827;
+      margin: 0 0 0.125rem 0;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
     }
 
-    .content-card p {
-      color: #666;
+    .stat-info p {
+      color: #6b7280;
       margin: 0;
-      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+
+    .quick-actions h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 0.25rem 0;
+      letter-spacing: -0.015em;
+    }
+
+    .quick-actions p {
+      color: #6b7280;
+      margin: 0;
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-page {
+        padding: 1rem 1.25rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      
+      .stat-card {
+        padding: 1rem;
+      }
+      
+      .welcome-section h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-page {
+        padding: 1rem;
+      }
+      
+      .stat-card {
+        gap: 0.75rem;
+      }
+      
+      .stat-icon {
+        width: 36px;
+        height: 36px;
+      }
+      
+      .stat-icon mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+      
+      .stat-info h3 {
+        font-size: 1.25rem;
+      }
     }
   `]
 })
-export class DashboardComponent {
-  private authService = inject(AuthService);
-
-  user = this.authService.user;
-
-  cards = signal<DashboardCard[]>([
-    { title: 'Total Orders', value: '156', icon: 'receipt_long', color: '#009c4c' },
-    { title: 'Menu Items', value: '42', icon: 'restaurant_menu', color: '#ff9800' },
-    { title: 'Staff Members', value: '8', icon: 'people', color: '#2196f3' },
-    { title: 'Monthly Revenue', value: '$12.4k', icon: 'trending_up', color: '#4caf50' }
-  ]);
-}
+export class DashboardComponent {}

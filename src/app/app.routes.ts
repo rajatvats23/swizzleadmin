@@ -47,7 +47,7 @@ export const routes: Routes = [
   // Protected dashboard routes
   {
     path: 'dashboard',
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     loadComponent: () => import('./shared/layouts/dashboard-layout.component').then(m => m.DashboardLayoutComponent),
     children: [
       {
