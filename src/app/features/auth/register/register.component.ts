@@ -3,136 +3,107 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService, RegisterRequest } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule
+  ],
   template: `
     <div class="register-container">
       @if (!invalidToken()) {
         <div class="register-header">
-          <h1 class="title">Complete Registration</h1>
+          <h1 class="title">
+            <mat-icon class="title-icon">person_add</mat-icon>
+            Complete Registration
+          </h1>
           <p class="subtitle">Enter your details to get started</p>
         </div>
 
         @if (errorMessage()) {
-          <div class="error-message">{{ errorMessage() }}</div>
+          <mat-card class="error-card">
+            <mat-icon class="error-icon">error</mat-icon>
+            {{ errorMessage() }}
+          </mat-card>
         }
 
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
           <div class="name-row">
-            <div class="form-field">
-              <label for="firstName">First Name</label>
-              <input
-                id="firstName"
-                type="text"
-                formControlName="firstName"
-                placeholder="Enter your first name"
-                [class.error]="firstNameControl.invalid && (firstNameControl.dirty || firstNameControl.touched)"
-              />
-              @if (firstNameControl.invalid && (firstNameControl.dirty || firstNameControl.touched)) {
-                <div class="field-error">First name is required</div>
-              }
-            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" placeholder="Enter your first name">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="firstNameControl.hasError('required')">First name is required</mat-error>
+            </mat-form-field>
 
-            <div class="form-field">
-              <label for="lastName">Last Name</label>
-              <input
-                id="lastName"
-                type="text"
-                formControlName="lastName"
-                placeholder="Enter your last name"
-                [class.error]="lastNameControl.invalid && (lastNameControl.dirty || lastNameControl.touched)"
-              />
-              @if (lastNameControl.invalid && (lastNameControl.dirty || lastNameControl.touched)) {
-                <div class="field-error">Last name is required</div>
-              }
-            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName" placeholder="Enter your last name">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="lastNameControl.hasError('required')">Last name is required</mat-error>
+            </mat-form-field>
           </div>
 
           <div class="phone-row">
-            <div class="form-field country-code">
-              <label for="countryCode">Country Code</label>
-              <input
-                id="countryCode"
-                type="text"
-                formControlName="countryCode"
-                placeholder="+1"
-                [class.error]="countryCodeControl.invalid && (countryCodeControl.dirty || countryCodeControl.touched)"
-              />
-              @if (countryCodeControl.invalid && (countryCodeControl.dirty || countryCodeControl.touched)) {
-                <div class="field-error">Required</div>
-              }
-            </div>
+            <mat-form-field appearance="outline" class="country-code">
+              <mat-label>Country Code</mat-label>
+              <input matInput formControlName="countryCode" placeholder="+1">
+              <mat-icon matSuffix>flag</mat-icon>
+              <mat-error *ngIf="countryCodeControl.hasError('required')">Required</mat-error>
+            </mat-form-field>
 
-            <div class="form-field phone-number">
-              <label for="phoneNumber">Phone Number</label>
-              <input
-                id="phoneNumber"
-                type="tel"
-                formControlName="phoneNumber"
-                placeholder="Enter your phone number"
-                [class.error]="phoneNumberControl.invalid && (phoneNumberControl.dirty || phoneNumberControl.touched)"
-              />
-              @if (phoneNumberControl.invalid && (phoneNumberControl.dirty || phoneNumberControl.touched)) {
-                <div class="field-error">Phone number is required</div>
-              }
-            </div>
+            <mat-form-field appearance="outline" class="phone-number">
+              <mat-label>Phone Number</mat-label>
+              <input matInput formControlName="phoneNumber" type="tel" placeholder="Enter your phone number">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="phoneNumberControl.hasError('required')">Phone number is required</mat-error>
+            </mat-form-field>
           </div>
 
-          <div class="form-field">
-            <label for="password">Password</label>
-            <div class="password-wrapper">
-              <input
-                id="password"
-                [type]="hidePassword() ? 'password' : 'text'"
-                formControlName="password"
-                placeholder="Create a password"
-                [class.error]="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)"
-              />
-              <button
-                type="button"
-                class="password-toggle"
-                (click)="togglePasswordVisibility()"
-              >
-                <span class="material-symbols-outlined">
-                  {{ hidePassword() ? 'visibility_off' : 'visibility' }}
-                </span>
-              </button>
-            </div>
-            @if (passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)) {
-              <div class="field-error">
-                @if (passwordControl.hasError('required')) {
-                  Password is required
-                } @else if (passwordControl.hasError('minlength')) {
-                  Password must be at least 8 characters
-                }
-              </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'" placeholder="Create a password">
+            <button matSuffix mat-icon-button type="button" (click)="togglePasswordVisibility()">
+              <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="passwordControl.hasError('required')">Password is required</mat-error>
+            <mat-error *ngIf="passwordControl.hasError('minlength')">Password must be at least 8 characters</mat-error>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" class="register-button" [disabled]="registerForm.invalid || submitting()">
+            @if (submitting()) {
+              <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
             }
-          </div>
-
-          <button
-            type="submit"
-            class="register-button"
-            [disabled]="registerForm.invalid || submitting()"
-          >
             {{ submitting() ? 'Processing...' : 'Complete Registration' }}
           </button>
         </form>
       } @else {
         <div class="invalid-token-container">
           <div class="register-header">
-            <h1 class="title error">Invalid Registration Link</h1>
+            <h1 class="title error">
+              <mat-icon class="title-icon">link_off</mat-icon>
+              Invalid Registration Link
+            </h1>
             <p class="subtitle">The registration link is invalid or has expired.</p>
           </div>
 
-          <button
-            type="button"
-            class="back-button"
-            (click)="router.navigate(['/auth/login'])"
-          >
+          <button mat-raised-button color="primary" (click)="router.navigate(['/auth/login'])" class="back-button">
+            <mat-icon>arrow_back</mat-icon>
             Back to Login
           </button>
         </div>
@@ -149,39 +120,53 @@ import { AuthService, RegisterRequest } from '../../../core/services/auth.servic
       margin-bottom: 2rem;
     }
 
+    .invalid-token-container .register-header {
+      text-align: center;
+    }
+
     .title {
       font-size: 1.5rem;
       font-weight: 500;
       color: #009c4c;
       margin: 0 0 0.5rem 0;
-      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .title.error {
       color: #dc3545;
+      justify-content: center;
+    }
+
+    .title-icon {
+      font-size: 1.5rem;
     }
 
     .subtitle {
       font-size: 1rem;
       color: #666;
       margin: 0;
-      font-family: 'Inter', sans-serif;
     }
 
-    .error-message {
+    .error-card {
       background-color: #fdf2f2;
       color: #dc3545;
-      padding: 0.75rem;
-      border-radius: 8px;
       margin-bottom: 1.5rem;
-      font-size: 0.875rem;
-      border: 1px solid #fecaca;
+      padding: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .error-icon {
+      color: #dc3545;
     }
 
     .register-form {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
     }
 
     .name-row,
@@ -190,105 +175,57 @@ import { AuthService, RegisterRequest } from '../../../core/services/auth.servic
       gap: 1rem;
     }
 
-    .name-row .form-field {
+    .name-row mat-form-field {
       flex: 1;
     }
 
     .phone-row .country-code {
-      flex: 0 0 120px;
+      flex: 0 0 140px;
     }
 
     .phone-row .phone-number {
       flex: 1;
     }
 
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-field label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #333;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .password-wrapper {
-      position: relative;
-    }
-
-    .form-field input {
-      padding: 0.75rem;
-      border: 2px solid #e1e5e9;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.2s ease;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .password-wrapper input {
-      padding-right: 2.5rem;
-    }
-
-    .form-field input:focus {
-      outline: none;
-      border-color: #009c4c;
-    }
-
-    .form-field input.error {
-      border-color: #dc3545;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #666;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .field-error {
-      font-size: 0.75rem;
-      color: #dc3545;
-      margin-top: 0.25rem;
-    }
-
     .register-button,
     .back-button {
       width: 100%;
-      padding: 0.875rem;
-      background-color: #009c4c;
-      color: white;
-      border: none;
-      border-radius: 8px;
+      height: 48px;
       font-size: 1rem;
       font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      font-family: 'Inter', sans-serif;
       margin-top: 0.5rem;
     }
 
-    .register-button:hover:not(:disabled),
-    .back-button:hover {
-      background-color: #007a3d;
-    }
-
-    .register-button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
+    .button-spinner {
+      margin-right: 8px;
     }
 
     .invalid-token-container {
       text-align: center;
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    /* Custom Material theme colors */
+    ::ng-deep .mat-mdc-raised-button.mat-primary {
+      --mdc-protected-button-container-color: #009c4c;
+      --mdc-protected-button-label-text-color: white;
+    }
+
+    ::ng-deep .mat-mdc-raised-button.mat-primary:hover {
+      --mdc-protected-button-container-color: #007a3d;
+    }
+
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__leading,
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__notch,
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: #009c4c;
+    }
+
+    ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+      color: #009c4c;
     }
 
     @media (max-width: 768px) {
@@ -300,16 +237,6 @@ import { AuthService, RegisterRequest } from '../../../core/services/auth.servic
 
       .phone-row .country-code {
         flex: 1;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .register-header {
-        margin-bottom: 1.5rem;
-      }
-
-      .register-form {
-        gap: 1.25rem;
       }
     }
   `]

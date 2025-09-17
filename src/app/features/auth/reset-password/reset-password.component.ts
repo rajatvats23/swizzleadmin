@@ -3,110 +3,88 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule
+  ],
   template: `
     <div class="reset-password-container">
       @if (!invalidToken()) {
         <div class="reset-header">
-          <h1 class="title">Set New Password</h1>
+          <h1 class="title">
+            <mat-icon class="title-icon">lock_reset</mat-icon>
+            Set New Password
+          </h1>
           <p class="subtitle">Type your new password below</p>
         </div>
 
         @if (errorMessage()) {
-          <div class="error-message">{{ errorMessage() }}</div>
+          <mat-card class="error-card">
+            <mat-icon class="error-icon">error</mat-icon>
+            {{ errorMessage() }}
+          </mat-card>
         }
 
         <form [formGroup]="resetForm" (ngSubmit)="onSubmit()" class="reset-form">
-          <div class="form-field">
-            <label for="password">New Password</label>
-            <div class="password-wrapper">
-              <input
-                id="password"
-                [type]="hidePassword() ? 'password' : 'text'"
-                formControlName="password"
-                placeholder="Enter your new password"
-                [class.error]="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)"
-              />
-              <button
-                type="button"
-                class="password-toggle"
-                (click)="togglePasswordVisibility()"
-              >
-                <span class="material-symbols-outlined">
-                  {{ hidePassword() ? 'visibility_off' : 'visibility' }}
-                </span>
-              </button>
-            </div>
-            @if (passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)) {
-              <div class="field-error">
-                @if (passwordControl.hasError('required')) {
-                  Password is required
-                } @else if (passwordControl.hasError('minlength')) {
-                  Password must be at least 8 characters
-                }
-              </div>
-            }
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>New Password</mat-label>
+            <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'" placeholder="Enter your new password">
+            <button matSuffix mat-icon-button type="button" (click)="togglePasswordVisibility()">
+              <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="passwordControl.hasError('required')">Password is required</mat-error>
+            <mat-error *ngIf="passwordControl.hasError('minlength')">Password must be at least 8 characters</mat-error>
+          </mat-form-field>
 
-          <div class="form-field">
-            <label for="confirmPassword">Confirm Password</label>
-            <div class="password-wrapper">
-              <input
-                id="confirmPassword"
-                [type]="hideConfirmPassword() ? 'password' : 'text'"
-                formControlName="confirmPassword"
-                placeholder="Confirm your new password"
-                [class.error]="confirmPasswordControl.invalid && (confirmPasswordControl.dirty || confirmPasswordControl.touched)"
-              />
-              <button
-                type="button"
-                class="password-toggle"
-                (click)="toggleConfirmPasswordVisibility()"
-              >
-                <span class="material-symbols-outlined">
-                  {{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}
-                </span>
-              </button>
-            </div>
-            @if (confirmPasswordControl.invalid && (confirmPasswordControl.dirty || confirmPasswordControl.touched)) {
-              <div class="field-error">
-                @if (confirmPasswordControl.hasError('required')) {
-                  Confirm password is required
-                }
-              </div>
-            }
-            @if (resetForm.hasError('passwordMismatch') && confirmPasswordControl.touched) {
-              <div class="field-error">
-                Passwords do not match
-              </div>
-            }
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput formControlName="confirmPassword" [type]="hideConfirmPassword() ? 'password' : 'text'" placeholder="Confirm your new password">
+            <button matSuffix mat-icon-button type="button" (click)="toggleConfirmPasswordVisibility()">
+              <mat-icon>{{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="confirmPasswordControl.hasError('required')">Confirm password is required</mat-error>
+            <mat-error *ngIf="resetForm.hasError('passwordMismatch') && confirmPasswordControl.touched">
+              Passwords do not match
+            </mat-error>
+          </mat-form-field>
 
-          <button
-            type="submit"
-            class="reset-button"
-            [disabled]="resetForm.invalid || submitting()"
-          >
+          <button mat-raised-button color="primary" type="submit" class="reset-button" [disabled]="resetForm.invalid || submitting()">
+            @if (submitting()) {
+              <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+            }
             {{ submitting() ? 'Resetting...' : 'Reset Password' }}
           </button>
         </form>
       } @else {
         <div class="invalid-token-container">
           <div class="reset-header">
-            <h1 class="title error">Invalid Reset Link</h1>
+            <h1 class="title error">
+              <mat-icon class="title-icon">link_off</mat-icon>
+              Invalid Reset Link
+            </h1>
             <p class="subtitle">The password reset link is invalid or has expired.</p>
           </div>
 
-          <button
-            type="button"
-            class="back-button"
-            routerLink="/auth/login"
-          >
+          <button mat-raised-button color="primary" routerLink="/auth/login" class="back-button">
+            <mat-icon>arrow_back</mat-icon>
             Back to Login
           </button>
         </div>
@@ -123,132 +101,94 @@ import { AuthService } from '../../../core/services/auth.service';
       margin-bottom: 2rem;
     }
 
+    .invalid-token-container .reset-header {
+      text-align: center;
+    }
+
     .title {
       font-size: 1.5rem;
       font-weight: 500;
       color: #009c4c;
       margin: 0 0 0.5rem 0;
-      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .title.error {
       color: #dc3545;
+      justify-content: center;
+    }
+
+    .title-icon {
+      font-size: 1.5rem;
     }
 
     .subtitle {
       font-size: 1rem;
       color: #666;
       margin: 0;
-      font-family: 'Inter', sans-serif;
     }
 
-    .error-message {
+    .error-card {
       background-color: #fdf2f2;
       color: #dc3545;
-      padding: 0.75rem;
-      border-radius: 8px;
       margin-bottom: 1.5rem;
-      font-size: 0.875rem;
-      border: 1px solid #fecaca;
+      padding: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .error-icon {
+      color: #dc3545;
     }
 
     .reset-form {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-field label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #333;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .password-wrapper {
-      position: relative;
-    }
-
-    .form-field input {
-      padding: 0.75rem;
-      border: 2px solid #e1e5e9;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.2s ease;
-      font-family: 'Inter', sans-serif;
-      width: 100%;
-      padding-right: 2.5rem;
-    }
-
-    .form-field input:focus {
-      outline: none;
-      border-color: #009c4c;
-    }
-
-    .form-field input.error {
-      border-color: #dc3545;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    .field-error {
-      font-size: 0.75rem;
-      color: #dc3545;
-      margin-top: 0.25rem;
+      gap: 1rem;
     }
 
     .reset-button,
     .back-button {
       width: 100%;
-      padding: 0.875rem;
-      background-color: #009c4c;
-      color: white;
-      border: none;
-      border-radius: 8px;
+      height: 48px;
       font-size: 1rem;
       font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      font-family: 'Inter', sans-serif;
+      margin-top: 0.5rem;
     }
 
-    .reset-button:hover:not(:disabled),
-    .back-button:hover {
-      background-color: #007a3d;
-    }
-
-    .reset-button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
+    .button-spinner {
+      margin-right: 8px;
     }
 
     .invalid-token-container {
       text-align: center;
     }
 
-    @media (max-width: 480px) {
-      .reset-header {
-        margin-bottom: 1.5rem;
-      }
+    mat-form-field {
+      width: 100%;
+    }
 
-      .reset-form {
-        gap: 1.25rem;
-      }
+    /* Custom Material theme colors */
+    ::ng-deep .mat-mdc-raised-button.mat-primary {
+      --mdc-protected-button-container-color: #009c4c;
+      --mdc-protected-button-label-text-color: white;
+    }
+
+    ::ng-deep .mat-mdc-raised-button.mat-primary:hover {
+      --mdc-protected-button-container-color: #007a3d;
+    }
+
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__leading,
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__notch,
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: #009c4c;
+    }
+
+    ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+      color: #009c4c;
     }
   `]
 })

@@ -3,78 +3,91 @@ import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule
+  ],
   template: `
     <div class="forgot-password-container">
       @if (!emailSent()) {
         <div class="forgot-header">
-          <h1 class="title">Forgot Password</h1>
+          <h1 class="title">
+            <mat-icon class="title-icon">lock_reset</mat-icon>
+            Forgot Password
+          </h1>
           <p class="subtitle">Enter the email address associated with your account</p>
         </div>
 
         @if (errorMessage()) {
-          <div class="error-message">{{ errorMessage() }}</div>
+          <mat-card class="error-card">
+            <mat-icon class="error-icon">error</mat-icon>
+            {{ errorMessage() }}
+          </mat-card>
         }
 
         <form [formGroup]="forgotForm" (ngSubmit)="onSubmit()" class="forgot-form">
-          <div class="form-field">
-            <label for="email">Email Address</label>
-            <input
-              id="email"
-              type="email"
-              formControlName="email"
-              placeholder="name@example.com"
-              [class.error]="emailControl.invalid && (emailControl.dirty || emailControl.touched)"
-            />
-            @if (emailControl.invalid && (emailControl.dirty || emailControl.touched)) {
-              <div class="field-error">
-                @if (emailControl.hasError('required')) {
-                  Email is required
-                } @else if (emailControl.hasError('email')) {
-                  Please enter a valid email address
-                }
-              </div>
-            }
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Email Address</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="name@example.com">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="emailControl.hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="emailControl.hasError('email')">Please enter a valid email</mat-error>
+          </mat-form-field>
 
-          <button
-            type="submit"
-            class="reset-button"
-            [disabled]="forgotForm.invalid || submitting()"
-          >
+          <button mat-raised-button color="primary" type="submit" class="reset-button" [disabled]="forgotForm.invalid || submitting()">
+            @if (submitting()) {
+              <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+            }
             {{ submitting() ? 'Sending...' : 'Reset Password' }}
           </button>
         </form>
 
         <div class="back-link">
-          <a routerLink="/auth/login">Back to Login</a>
+          <button mat-button routerLink="/auth/login" color="primary">
+            <mat-icon>arrow_back</mat-icon>
+            Back to Login
+          </button>
         </div>
       } @else {
         <div class="success-container">
           <div class="forgot-header">
-            <h1 class="title">Check your Email</h1>
+            <h1 class="title success">
+              <mat-icon class="title-icon">mark_email_read</mat-icon>
+              Check your Email
+            </h1>
             <p class="subtitle">
               We have sent a password reset link to<br />
               <strong>{{ sentEmail() }}</strong>
             </p>
           </div>
 
-          <button
-            type="button"
-            class="back-button"
-            routerLink="/auth/login"
-          >
+          <button mat-raised-button color="primary" routerLink="/auth/login" class="back-button">
+            <mat-icon>arrow_back</mat-icon>
             Back to Login
           </button>
 
           <div class="resend-section">
             <p>Didn't receive the email?</p>
-            <button type="button" class="resend-link" (click)="resendEmail()">
+            <button mat-button color="warn" (click)="resendEmail()">
+              <mat-icon>refresh</mat-icon>
               Click to resend
             </button>
           </div>
@@ -92,30 +105,48 @@ import { AuthService } from '../../../core/services/auth.service';
       margin-bottom: 2rem;
     }
 
+    .success-container .forgot-header {
+      text-align: center;
+    }
+
     .title {
       font-size: 1.5rem;
       font-weight: 500;
       color: #dc3545;
       margin: 0 0 0.5rem 0;
-      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .title.success {
+      color: #009c4c;
+      justify-content: center;
+    }
+
+    .title-icon {
+      font-size: 1.5rem;
     }
 
     .subtitle {
       font-size: 1rem;
       color: #666;
       margin: 0;
-      font-family: 'Inter', sans-serif;
       line-height: 1.4;
     }
 
-    .error-message {
+    .error-card {
       background-color: #fdf2f2;
       color: #dc3545;
-      padding: 0.75rem;
-      border-radius: 8px;
       margin-bottom: 1.5rem;
-      font-size: 0.875rem;
-      border: 1px solid #fecaca;
+      padding: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .error-icon {
+      color: #dc3545;
     }
 
     .forgot-form {
@@ -125,129 +156,59 @@ import { AuthService } from '../../../core/services/auth.service';
       margin-bottom: 1.5rem;
     }
 
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-field label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #333;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .form-field input {
-      padding: 0.75rem;
-      border: 2px solid #e1e5e9;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.2s ease;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .form-field input:focus {
-      outline: none;
-      border-color: #009c4c;
-    }
-
-    .form-field input.error {
-      border-color: #dc3545;
-    }
-
-    .field-error {
-      font-size: 0.75rem;
-      color: #dc3545;
-      margin-top: 0.25rem;
-    }
-
     .reset-button,
     .back-button {
       width: 100%;
-      padding: 0.875rem;
-      background-color: #009c4c;
-      color: white;
-      border: none;
-      border-radius: 8px;
+      height: 48px;
       font-size: 1rem;
       font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      font-family: 'Inter', sans-serif;
     }
 
-    .reset-button:hover:not(:disabled),
-    .back-button:hover {
-      background-color: #007a3d;
-    }
-
-    .reset-button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
+    .button-spinner {
+      margin-right: 8px;
     }
 
     .back-link {
       text-align: center;
     }
 
-    .back-link a {
-      font-size: 0.875rem;
-      color: #666;
-      text-decoration: none;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .back-link a:hover {
-      color: #009c4c;
-      text-decoration: underline;
-    }
-
     .success-container {
       text-align: center;
     }
 
-    .success-container .forgot-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .success-container .title {
-      color: #009c4c;
-    }
-
     .resend-section {
       margin-top: 1.5rem;
-      font-size: 0.875rem;
-      color: #666;
+      text-align: center;
     }
 
     .resend-section p {
       margin: 0 0 0.5rem 0;
-    }
-
-    .resend-link {
-      background: none;
-      border: none;
-      color: #dc3545;
-      text-decoration: underline;
-      cursor: pointer;
       font-size: 0.875rem;
-      font-family: 'Inter', sans-serif;
+      color: #666;
     }
 
-    .resend-link:hover {
-      color: #b52d3a;
+    mat-form-field {
+      width: 100%;
     }
 
-    @media (max-width: 480px) {
-      .forgot-header {
-        margin-bottom: 1.5rem;
-      }
+    /* Custom Material theme colors */
+    ::ng-deep .mat-mdc-raised-button.mat-primary {
+      --mdc-protected-button-container-color: #009c4c;
+      --mdc-protected-button-label-text-color: white;
+    }
 
-      .forgot-form {
-        gap: 1.25rem;
-      }
+    ::ng-deep .mat-mdc-raised-button.mat-primary:hover {
+      --mdc-protected-button-container-color: #007a3d;
+    }
+
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__leading,
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__notch,
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: #009c4c;
+    }
+
+    ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+      color: #009c4c;
     }
   `]
 })

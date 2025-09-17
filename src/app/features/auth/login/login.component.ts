@@ -3,12 +3,26 @@ import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    RouterLink,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule
+  ],
   template: `
     <div class="login-container">
       <div class="login-header">
@@ -17,69 +31,45 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
 
       @if (errorMessage()) {
-        <div class="error-message">{{ errorMessage() }}</div>
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          {{ errorMessage() }}
+        </div>
       }
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-        <div class="form-field">
-          <label for="email">Email Address</label>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            placeholder="name@example.com"
-            [class.error]="emailControl.invalid && (emailControl.dirty || emailControl.touched)"
-          />
-          @if (emailControl.invalid && (emailControl.dirty || emailControl.touched)) {
-            <div class="field-error">
-              @if (emailControl.hasError('required')) {
-                Email is required
-              } @else if (emailControl.hasError('email')) {
-                Please enter a valid email address
-              }
-            </div>
-          }
-        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Email Address</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="name@example.com">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="emailControl.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="emailControl.hasError('email')">Please enter a valid email</mat-error>
+        </mat-form-field>
 
-        <div class="form-field">
-          <label for="password">Password</label>
-          <div class="password-wrapper">
-            <input
-              id="password"
-              [type]="hidePassword() ? 'password' : 'text'"
-              formControlName="password"
-              placeholder="Enter your password"
-              [class.error]="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)"
-            />
-            <button
-              type="button"
-              class="password-toggle"
-              (click)="togglePasswordVisibility()"
-            >
-              <span class="material-symbols-outlined">
-                {{ hidePassword() ? 'visibility_off' : 'visibility' }}
-              </span>
-            </button>
-          </div>
-          @if (passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)) {
-            <div class="field-error">
-              Password is required
-            </div>
-          }
-        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'" placeholder="Enter your password">
+          <button matSuffix mat-icon-button type="button" (click)="togglePasswordVisibility()">
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="passwordControl.hasError('required')">Password is required</mat-error>
+        </mat-form-field>
 
         <div class="forgot-password">
-          <a routerLink="/auth/forgot-password" class="forgot-link">Forgot Password</a>
+          <a mat-button routerLink="/auth/forgot-password" color="warn">Forgot Password?</a>
         </div>
 
-        <button
-          type="submit"
-          class="signin-button"
-          [disabled]="loginForm.invalid || submitting()"
-        >
+        <button mat-raised-button color="primary" type="submit" class="signin-button" [disabled]="loginForm.invalid || submitting()">
+          @if (submitting()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          }
           {{ submitting() ? 'Signing in...' : 'Sign in' }}
         </button>
       </form>
+
+      <div class="auth-footer">
+        <p>Need access? Contact your restaurant administrator</p>
+      </div>
     </div>
   `,
   styles: [`
@@ -97,14 +87,12 @@ import { AuthService } from '../../../core/services/auth.service';
       font-weight: 500;
       color: #009c4c;
       margin: 0 0 0.5rem 0;
-      font-family: 'Inter', sans-serif;
     }
 
     .signin-subtitle {
       font-size: 1rem;
       color: #666;
       margin: 0;
-      font-family: 'Inter', sans-serif;
     }
 
     .error-message {
@@ -113,6 +101,9 @@ import { AuthService } from '../../../core/services/auth.service';
       padding: 0.75rem;
       border-radius: 8px;
       margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       font-size: 0.875rem;
       border: 1px solid #fecaca;
     }
@@ -120,110 +111,64 @@ import { AuthService } from '../../../core/services/auth.service';
     .login-form {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-field label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #333;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .form-field input {
-      padding: 0.75rem;
-      border: 2px solid #e1e5e9;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.2s ease;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .form-field input:focus {
-      outline: none;
-      border-color: #009c4c;
-    }
-
-    .form-field input.error {
-      border-color: #dc3545;
-    }
-
-    .password-wrapper {
-      position: relative;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #666;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .field-error {
-      font-size: 0.75rem;
-      color: #dc3545;
-      margin-top: 0.25rem;
+      gap: 1rem;
     }
 
     .forgot-password {
       text-align: right;
-    }
-
-    .forgot-link {
-      font-size: 0.875rem;
-      color: #dc3545;
-      text-decoration: none;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .forgot-link:hover {
-      text-decoration: underline;
+      margin: -0.5rem 0 1rem 0;
     }
 
     .signin-button {
       width: 100%;
-      padding: 0.875rem;
-      background-color: #009c4c;
-      color: white;
-      border: none;
-      border-radius: 8px;
+      height: 48px;
       font-size: 1rem;
       font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
-    .signin-button:hover:not(:disabled) {
-      background-color: #007a3d;
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e1e5e9;
     }
 
-    .signin-button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
+    .auth-footer p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #666;
     }
 
-    @media (max-width: 480px) {
-      .login-header {
-        margin-bottom: 1.5rem;
-      }
+    mat-form-field {
+      width: 100%;
+    }
 
-      .login-form {
-        gap: 1.25rem;
-      }
+    mat-spinner {
+      margin-right: 8px;
+    }
+
+    /* Custom Material theme colors */
+    ::ng-deep .mat-mdc-raised-button.mat-primary {
+      --mdc-protected-button-container-color: #009c4c;
+      --mdc-protected-button-label-text-color: white;
+    }
+
+    ::ng-deep .mat-mdc-raised-button.mat-primary:hover {
+      --mdc-protected-button-container-color: #007a3d;
+    }
+
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__leading,
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__notch,
+    ::ng-deep .mat-mdc-outlined-text-field.mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: #009c4c;
+    }
+
+    ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+      color: #009c4c;
     }
   `]
 })
