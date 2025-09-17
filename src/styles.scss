@@ -1,1 +1,72 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #fff8eb;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Material Icons configuration */
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24;
+}
+
+/* Custom CSS variables for the app theme */
+:root {
+  --primary-color: #009c4c;
+  --secondary-color: #fff8eb;
+  --error-color: #dc3545;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --border-color: #e1e5e9;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --border-radius: 8px;
+  --border-radius-large: 12px;
+}
+
+/* Utility classes */
+.text-primary { color: var(--primary-color); }
+.text-error { color: var(--error-color); }
+.text-muted { color: var(--text-secondary); }
+
+/* Form elements global styles */
+input, textarea, select {
+  font-family: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Remove default button styles */
+button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Scroll behavior */
+html {
+  scroll-behavior: smooth;
+}

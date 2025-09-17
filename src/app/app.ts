@@ -1,12 +1,18 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  template: `<router-outlet />`,
+  styles: [`
+    :host {
+      display: block;
+      width: 100%;
+      min-height: 100vh;
+    }
+  `]
 })
 export class App {
-  protected readonly title = signal('swizzle-admin');
+  
 }
